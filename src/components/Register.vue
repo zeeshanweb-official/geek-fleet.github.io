@@ -14,69 +14,80 @@
                 <div class="col-md-8 pl-md-0">
                   <div class="auth-form-wrapper px-4 py-5">
                     <a href="#" class="noble-ui-logo d-block mb-2"
-                      >Noble<span>UI</span></a
+                      >Geek<span>Fleet</span></a
                     >
                     <h5 class="text-muted font-weight-normal mb-4">
                       Create a free account.
                     </h5>
-                    <form class="forms-sample">
+                    <form @submit.prevent="saveUser" class="forms-sample">
                       <div class="form-group">
-                        <label for="exampleInputUsername1">Username</label>
+                        <label for="Name">First Name</label>
                         <input
+                          v-model="form.first_name"
                           type="text"
                           class="form-control"
-                          id="exampleInputUsername1"
-                          autocomplete="Username"
-                          placeholder="Username"
+                          placeholder="First Name"
                         />
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputEmail1">Email address</label>
+                        <label for="Name">Last Name</label>
                         <input
+                          v-model="form.last_name"
+                          type="text"
+                          class="form-control"
+                          placeholder="Last Name"
+                        />
+                      </div>
+                      <div class="form-group">
+                        <label for="Name">Email</label>
+                        <input
+                          v-model="form.email"
                           type="email"
                           class="form-control"
-                          id="exampleInputEmail1"
                           placeholder="Email"
                         />
                       </div>
                       <div class="form-group">
-                        <label for="exampleInputPassword1">Password</label>
+                        <label for="Name">Password</label>
                         <input
+                          v-model="form.password"
                           type="password"
                           class="form-control"
-                          id="exampleInputPassword1"
-                          autocomplete="current-password"
-                          placeholder="Password"
+                          placeholder="*******"
                         />
                       </div>
+
+                      <div class="form-group">
+                        <label for="phone_no">Phone No</label>
+                        <div class="input-group-prepend">
+                          <input
+                            v-model="form.phone"
+                            type="text"
+                            class="form-control"
+                            placeholder="+13352968699"
+                          />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="business_email">Address</label>
+                        <input
+                          v-model="form.address"
+                          type="text"
+                          class="form-control"
+                          autocomplete="off"
+                          placeholder="Address"
+                        />
+                      </div>
+
+                      <button type="submit" class="btn btn-primary mr-2">
+                        Submit
+                      </button>
                       <div
-                        class="form-check form-check-flat form-check-primary"
+                        @click.prevent="$router.go(-1)"
+                        class="btn btn-light"
                       >
-                        <label class="form-check-label">
-                          <input type="checkbox" class="form-check-input" />
-                          Remember me
-                        </label>
+                        Cancel
                       </div>
-                      <div class="mt-3">
-                        <a
-                          href="../../dashboard-one.html"
-                          class="btn btn-primary text-white mr-2 mb-2 mb-md-0"
-                          >Sing up</a
-                        >
-                        <button
-                          type="button"
-                          class="btn btn-outline-primary btn-icon-text mb-2 mb-md-0"
-                        >
-                          <i
-                            class="btn-icon-prepend"
-                            data-feather="twitter"
-                          ></i>
-                          Sign up with twitter
-                        </button>
-                      </div>
-                      <router-link to="/" class="d-block mt-3 text-muted"
-                        >Already a user? Sign in</router-link
-                      >
                     </form>
                   </div>
                 </div>
@@ -91,8 +102,31 @@
 
 <script>
 export default {
-  mounted () {
-    console.log('Component mounted.')
+  data () {
+    return {
+      form: {
+        first_name: null,
+        last_name: null,
+        phone: null,
+        address: null,
+        email: null,
+        password: null,
+        userImage: null,
+        userType: 'professional'
+      }
+    }
+  },
+  methods: {
+    saveUser () {
+      this.$store
+        .dispatch('REGISTERUSERACTION', this.form)
+        .then(success => {
+          this.$router.go(-1)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    }
   }
 }
 </script>

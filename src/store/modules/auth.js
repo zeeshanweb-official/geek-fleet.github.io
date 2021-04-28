@@ -9,7 +9,9 @@ import {
   DELETEUSERACTION,
   DELETEUSERMUTATION,
   GETSINGLEUSERACTION,
-  UPDATEAUSERACTION
+  UPDATEAUSERACTION,
+  USERTYPEACTION,
+  USERTYPEMUTATION
 } from '../constants'
 import router from '@/router'
 import firebase from 'firebase'
@@ -17,15 +19,18 @@ import database from '@/db'
 const state = {
   user: {},
   login: false,
-  users: []
+  users: [],
+  userType: null
 }
 const mutations = {
+  [USERTYPEMUTATION] (state, payload) {
+    state.userType = payload
+  },
   [LOGINSUCCESS] (state, payload) {
     state.login = true
     state.user = payload
   },
   [LOGINUNSUCCESS] (state, payload) {
-    console.log('got erhe')
     ;(state.login = false), (state.error = payload)
   },
   [GETUSERSMUTATION] (state, payload) {
@@ -39,16 +44,19 @@ const mutations = {
   }
 }
 const actions = {
+  [USERTYPEACTION] ({ commit }, payload) {
+    commit(USERTYPEMUTATION, payload)
+  },
   [LOGINACTION] ({ commit }, payload) {
     //   .createUserWithEmailAndPassword(payload.email, payload.password)
     return firebase
       .auth()
       .signInWithEmailAndPassword(payload.email, payload.password)
       .then(user => {
-        console.log(user)
-        commit(LOGINSUCCESS, user)
-        router.push('/dashboard')
-        return user
+        if (user.uid) {
+          commit(LOGINSUCCESS, user)
+          return user
+        }
       })
       .catch(error => {
         console.log(error)
@@ -57,7 +65,8 @@ const actions = {
       })
   },
   [ALREADYLOGGEDINFROMSESSIONS] ({ commit }, payload) {
-    commit(LOGINSUCCESS, payload)
+    commit(LOGINSUCCESS, payload.user)
+    commit(USERTYPEMUTATION, payload.type)
   },
   [REGISTERUSERACTION] ({ commit }, payload) {
     if (payload.email && payload.password) {
@@ -66,16 +75,11 @@ const actions = {
         .createUserWithEmailAndPassword(payload.email, payload.password)
         .then(user => {
           console.log(user)
+          payload.userID = user.uid
           database.db
             .collection('user')
-            .add({
-              name: payload.name,
-              phone: payload.phone,
-              address: payload.address,
-              active: false
-            })
+            .add(payload)
             .then(docRef => {
-              console.log('user added: ', docRef.id)
               router.push('/userlist')
             })
             .catch(error => {
@@ -96,9 +100,7 @@ const actions = {
         querySnapshot.forEach(doc => {
           let obj = {
             id: doc.id,
-            name: doc.data().name,
-            phone: doc.data().phone,
-            address: doc.data().address
+            ...doc.data()
           }
           allUsers.push(obj)
         })
@@ -133,7 +135,7 @@ const actions = {
       })
   },
   [UPDATEAUSERACTION] ({ commit }, payload) {
-    database.db
+    return database.db
       .collection('user')
       .doc(payload.id)
       .update(payload.user)
@@ -146,6 +148,9 @@ const actions = {
   }
 }
 const getters = {
+  USERTYPE (state) {
+    return state.userType
+  },
   LOGIN (state) {
     return state.login
   },

@@ -328,9 +328,9 @@
                   </a>
                 </li>
                 <li class="nav-item">
-                  <a class="nav-link" href=""
-                    ><i data-feather="log-out"></i> <span>Log Out</span></a
-                  >
+                  <div class="nav-link" @click="logout">
+                    <i data-feather="log-out"></i> <span>Log Out</span>
+                  </div>
                 </li>
               </ul>
             </div>
@@ -340,3 +340,14 @@
     </div>
   </nav>
 </template>
+<script>
+export default {
+  methods: {
+    logout () {
+      localStorage.clear()
+      this.$store.commit('LOGINUNSUCCESS')
+      this.$router.push('/')
+    }
+  }
+}
+</script>

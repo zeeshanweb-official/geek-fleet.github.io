@@ -8,7 +8,8 @@ import {
   CREATEITEMMUTATION,
   UPDATEITEMMUTATION,
   DELETEITEMMUTATION,
-  GETSINGLEITEMTOEDITMUTATION
+  GETSINGLEITEMTOEDITMUTATION,
+  ASSIGNTICKET
 } from '../constants'
 import router from '@/router'
 import database from '@/db'
@@ -97,6 +98,20 @@ const actions = {
       })
       .catch(function (error) {
         console.error('Error removing document: ', error)
+      })
+  },
+  [ASSIGNTICKET] ({ commit }, payload) {
+    return database.db
+      .collection(payload.collection)
+      .doc(payload.id)
+      .update({
+        assignedTo: payload.user
+      })
+      .then(updatedData => {
+        return updatedData
+      })
+      .catch(function (error) {
+        return error
       })
   }
 }

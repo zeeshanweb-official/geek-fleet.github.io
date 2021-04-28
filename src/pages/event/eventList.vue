@@ -102,6 +102,9 @@ export default {
   computed: {
     events () {
       return this.$store.getters.ITEMS
+    },
+    USERTYPE () {
+      return this.$store.getters.USERTYPE
     }
   },
   methods: {

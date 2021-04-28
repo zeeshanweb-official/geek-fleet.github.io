@@ -1,12 +1,14 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Auth from './modules/auth'
-import Tickets from './modules/tickets'
+import Operations from './modules/operations'
+import Chat from './modules/chat'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   modules: {
     Auth,
-    Tickets
+    Operations,
+    Chat
   }
 })

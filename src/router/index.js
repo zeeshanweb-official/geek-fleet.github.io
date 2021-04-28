@@ -38,11 +38,6 @@ const router = new Router({
       component: eventList
     },
     {
-      path: '/introduction',
-      name: 'introduction_page',
-      component: Introduction
-    },
-    {
       path: '/eventcreate',
       name: 'eventcreate',
       component: eventCreate
@@ -70,7 +65,7 @@ const router = new Router({
     {
       path: '/useredit/:id',
       name: 'useredit',
-      component: userEdit
+      component: userCreate
     },
     {
       path: '/usercreate',
@@ -126,21 +121,38 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.name === 'login' || to.name === 'register') {
-    store.commit('LOGINUNSUCCESS')
-    if (this.a.app.$session.exists()) {
-      next({ name: 'dashboard' })
+  // if (to.name === 'introduction_page') {
+  //   store.dispatch('INTRODUCTIONMODE', true)
+  // } else {
+  //   store.dispatch('INTRODUCTIONMODE', true)
+  // }
+  //user already logged in
+  if (JSON.parse(localStorage.getItem('login'))) {
+    //logged in user tries to login or register page again
+    if (to.name === 'login' || to.name === 'register') {
+      next('/dashboard')
+    } else if (to.name === 'introduction_page') {
+      store.commit('LOGINUNSUCCESS')
+      next()
+    } else {
+      store.dispatch('ALREADYLOGGEDINFROMSESSIONS', {
+        user: JSON.parse(localStorage.getItem('login')),
+        type: localStorage.getItem('USERTYPE')
+      })
+      next()
     }
-    next({ name: 'dashboard' })
-  } else if (to.name === 'introduction_page') {
-    store.commit('LOGINUNSUCCESS')
   } else {
-    store.dispatch(
-      'ALREADYLOGGEDINFROMSESSIONS',
-      this.a.app.$session.get('user')
-    )
+    if (
+      to.name === 'login' ||
+      to.name === 'register' ||
+      to.name === 'introduction_page'
+    ) {
+      store.commit('LOGINUNSUCCESS')
+      next()
+    } else {
+      next({ name: 'login' })
+    }
   }
-  next()
 })
 
 export default router

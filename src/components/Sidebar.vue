@@ -21,7 +21,11 @@
               <span class="link-title text-uppercase">Dashboard</span>
             </router-link>
           </li>
-          <template v-for="item in routes">
+          <template
+            v-for="item in USERTYPE === 'professional'
+              ? professionalroutes
+              : adminroutes"
+          >
             <span :key="item.index" class="my-2">
               <li class="nav-item nav-category text-uppercase">
                 {{ item.name }}
@@ -77,7 +81,7 @@ export default {
   },
   data () {
     return {
-      routes: [
+      adminroutes: [
         {
           name: 'user',
           dropdowns: [
@@ -99,7 +103,7 @@ export default {
           ]
         },
         {
-          name: 'web apps',
+          name: 'web app',
           dropdowns: [
             {
               name: 'tickets',
@@ -163,9 +167,38 @@ export default {
             }
           ]
         }
+      ],
+      professionalroutes: [
+        {
+          name: 'web app',
+          dropdowns: [
+            {
+              name: 'tickets',
+              icon: 'local_activity',
+              children: [
+                {
+                  name: 'list tickets',
+                  route: '/ticketlist'
+                }
+              ]
+            },
+
+          
+          ]
+        }
       ]
     }
   },
-  mounted () {}
+  computed: {
+    USERTYPE () {
+      return this.$store.getters.USERTYPE
+    }
+  }
 }
 </script>
+
+<style>
+.sidebar {
+  overflow-y: auto;
+}
+</style>

@@ -1,9 +1,13 @@
 <template>
   <div>
-    this is the Introduction page
+    <NavBar></NavBar>
   </div>
 </template>
 <script>
-import { mapMutations } from 'vuex'
-export default {}
+import NavBar from '@/components/introduction/navbar'
+export default {
+  components: {
+    NavBar
+  }
+}
 </script>

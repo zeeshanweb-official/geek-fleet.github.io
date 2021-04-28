@@ -21,12 +21,21 @@
             <h6 class="card-title">Users Form</h6>
             <form @submit.prevent="saveUser" class="forms-sample">
               <div class="form-group">
-                <label for="Name">Name</label>
+                <label for="Name">First Name</label>
                 <input
-                  v-model="form.name"
+                  v-model="form.first_name"
                   type="text"
                   class="form-control"
-                  placeholder="Name"
+                  placeholder="First Name"
+                />
+              </div>
+              <div class="form-group">
+                <label for="Name">Last Name</label>
+                <input
+                  v-model="form.last_name"
+                  type="text"
+                  class="form-control"
+                  placeholder="Last Name"
                 />
               </div>
               <div class="form-group">
@@ -51,12 +60,11 @@
               <div class="form-group">
                 <label for="phone_no">Phone No</label>
                 <div class="input-group-prepend">
-                  <span class="input-group-text">+92</span>
                   <input
                     v-model="form.phone"
                     type="text"
                     class="form-control"
-                    placeholder="3352968699"
+                    placeholder="+13352968699"
                   />
                 </div>
               </div>
@@ -88,17 +96,44 @@ export default {
   data () {
     return {
       form: {
-        name: null,
+        first_name: null,
+        last_name: null,
         phone: null,
         address: null,
         email: null,
-        password: null
+        password: null,
+        userImage: null,
+        userType: 'professional'
       }
+    }
+  },
+  mounted () {
+    if (this.$route.params.id) {
+      this.$store
+        .dispatch('GETSINGLEUSERACTION', this.$route.params.id)
+        .then(user => {
+          this.form = user
+        })
     }
   },
   methods: {
     saveUser () {
-      this.$store.dispatch('REGISTERUSERACTION', this.form)
+      this.$store
+        .dispatch(
+          this.$route.params.id ? 'UPDATEAUSERACTION' : 'REGISTERUSERACTION',
+          this.$route.params.id
+            ? {
+                id: this.$route.params.id,
+                user: this.form
+              }
+            : this.form
+        )
+        .then(success => {
+          this.$router.go(-1)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
   }
 }

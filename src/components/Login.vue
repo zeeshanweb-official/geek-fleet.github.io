@@ -11,7 +11,7 @@
               <div class="col-md-8 pl-md-0">
                 <div class="auth-form-wrapper px-4 py-5">
                   <a href="#" class="noble-ui-logo d-block mb-2"
-                    >Geek<span>UI</span></a
+                    >Geek<span>Fleet</span></a
                   >
                   <h5 class="text-muted font-weight-normal mb-4">
                     Welcome back! Log in to your account.
@@ -72,6 +72,7 @@
   </div>
 </template>
 <script>
+import database from '@/db'
 export default {
   data () {
     return {
@@ -83,9 +84,30 @@ export default {
     formSubmitted (e) {
       e.preventDefault()
       this.$store.dispatch('LOGINACTION', this.form).then(user => {
-        this.$session.start()
-        this.$session.set('user', user)
-        console.log('i am after return', user)
+        console.log(user)
+        if (user) {
+          database.db
+            .collection('user')
+            .where('userID', '==', user.uid)
+            .get()
+            .then(querySnapshot => {
+              if (querySnapshot.docs.length < 1) {
+                let usertype = 'admin'
+                this.$store.dispatch('USERTYPEACTION', usertype)
+                localStorage.setItem('USERTYPE', usertype)
+              } else {
+                querySnapshot.forEach(doc => {
+                  let usertype = doc.data().userType
+                  this.$store.dispatch('USERTYPEACTION', usertype)
+                  localStorage.setItem('USERTYPE', usertype)
+                })
+              }
+            })
+            .then(() => {
+              localStorage.setItem('login', JSON.stringify(user))
+              this.$router.push('/dashboard')
+            })
+        }
       })
     }
   }
