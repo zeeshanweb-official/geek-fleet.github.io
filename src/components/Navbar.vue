@@ -301,32 +301,12 @@
             <div class="dropdown-body">
               <ul class="profile-nav p-0 pt-3">
                 <li class="nav-item">
-                  <a href="pages/general/profile.html" class="nav-link">
+                  <a href="http://utechware.com/wordpress/" class="nav-link">
                     <i data-feather="user"></i>
-                    <span>Profile</span>
+                    <span>Portal</span>
                   </a>
                 </li>
-                <li class="nav-item">
-                  <a href="pages/general/profile.html" class="nav-link">
-                    <i data-feather="user"></i>
-                    <span>Profile</span>
-                  </a>
-                  <router-link to="/introduction" class="sidebar-brand">
-                    Geek<span>Fleet</span> web
-                  </router-link>
-                </li>
-                <li class="nav-item">
-                  <a href="javascript:;" class="nav-link">
-                    <i data-feather="edit"></i>
-                    <span>Edit Profile</span>
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a href="javascript:;" class="nav-link">
-                    <i data-feather="repeat"></i>
-                    <span>Switch User</span>
-                  </a>
-                </li>
+
                 <li class="nav-item">
                   <div class="nav-link" @click="logout">
                     <i data-feather="log-out"></i> <span>Log Out</span>
