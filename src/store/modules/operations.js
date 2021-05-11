@@ -6,10 +6,9 @@ import {
   GETSINGLEITEMTOEDITACTION,
   GETITEMSMUTATION,
   CREATEITEMMUTATION,
-  UPDATEITEMMUTATION,
   DELETEITEMMUTATION,
-  GETSINGLEITEMTOEDITMUTATION,
-  ASSIGNTICKET
+  ASSIGNTICKET,
+  DASHBOARDCOUNTS
 } from '../constants'
 import router from '@/router'
 import database from '@/db'
@@ -112,6 +111,14 @@ const actions = {
       })
       .catch(function (error) {
         return error
+      })
+  },
+  [DASHBOARDCOUNTS] ({ commit }, payload) {
+    return database.db
+      .collection(payload)
+      .get()
+      .then(function (querySnapshot) {
+        return querySnapshot.size
       })
   }
 }
